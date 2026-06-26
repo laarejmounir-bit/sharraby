@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme inline {
+  --animate-infinite-scroll: infinite-scroll 160s linear infinite;
+
+  @keyframes infinite-scroll {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+.scrolling-wrapper {
+  animation: infinite-scroll 160s linear infinite;
+}
+
+.scrolling-wrapper:hover {
+  animation-play-state: paused;
+}
+
+:root {
+  --background: #f8f9fa;
+  --foreground: #1d1d1f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: #1a535c;
+  --color-primary-dark: #123c42;
+  --font-sans: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.dir-ltr {
+  direction: ltr;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-only, .print-only * {
+    visibility: visible;
+  }
+  .print-only {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  @page {
+    margin: 0;
+    size: 101.6mm 152.4mm; /* 4x6 inches standard shipping label */
+  }
+  html, body {
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+}
