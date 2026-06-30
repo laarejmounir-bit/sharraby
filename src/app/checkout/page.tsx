@@ -32,6 +32,28 @@ export default function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [phoneError, setPhoneError] = useState("");
+
+  const validatePhone = (phone: string) => {
+    const cleanPhone = phone.replace(/[^\d]/g, '');
+    
+    if (cleanPhone.length < 9) {
+      return "رقم الجوال ناقص، يرجى التأكد من كتابته بشكل صحيح.";
+    }
+    if (cleanPhone.length > 14) {
+      return "رقم الجوال زائد، يرجى التأكد من كتابته بشكل صحيح.";
+    }
+    
+    if (cleanPhone.startsWith('05') && cleanPhone.length !== 10) {
+      if (cleanPhone.length < 10) {
+        return "رقم الجوال ناقص، يرجى التأكد من كتابته بشكل صحيح (مثال: 05XXXXXXXX).";
+      } else {
+        return "رقم الجوال زائد، يرجى التأكد من كتابته بشكل صحيح (مثال: 05XXXXXXXX).";
+      }
+    }
+
+    return "";
+  };
 
   const subtotal = getCartTotal();
   const shipping = subtotal >= 99 ? 0 : 25;
@@ -121,14 +143,27 @@ export default function CheckoutPage() {
     return newOrderId;
   };
 
-  const sendOrderWebhook = async () => {
+  const sendOrderWebhook = async (currentOrderId: number, paymentStatus: string) => {
     try {
+      const paymentText = paymentStatus === "Paid" ? "مدفوع" : "غير مدفوع";
       const payload = {
+        orderId: currentOrderId,
+        paymentStatus: paymentText,
         fullName: formData.name,
         phone: formData.phone,
         city: formData.city,
         neighborhood: formData.district,
-        orderDetails: items.map(item => `المنتج: ${item.name} | الكمية: ${item.quantity} | السعر: ${item.price}`).join('\n'),
+        orderDetails: items.map(item => {
+          let itemName = item.name;
+          // Force 'بكج التوفير' for anything that is cotton-bundle or already has it
+          if (item.id.includes("cotton-bundle") || itemName.includes("بكج التوفير")) {
+            itemName = itemName.replace(/^(1 بكج|2 بكج|3 بكج)/, "بكج التوفير");
+            if (!itemName.includes("بكج التوفير")) {
+              itemName = "بكج التوفير - " + itemName;
+            }
+          }
+          return `المنتج: ${itemName} | الكمية: ${item.quantity} | السعر: ${item.price}`;
+        }).join('\n') + `\n\n--- تفاصيل إضافية ---\nرقم الطلب: ${currentOrderId}\nحالة الدفع: ${paymentText}`,
       };
 
       await fetch(
@@ -149,8 +184,8 @@ export default function CheckoutPage() {
 
   const handleStripeSuccess = async (paymentIntentId: string) => {
     try {
-      await createOrder("Paid", paymentIntentId);
-      await sendOrderWebhook();
+      const newOrderId = await createOrder("Paid", paymentIntentId);
+      await sendOrderWebhook(newOrderId, "Paid");
       window.scrollTo(0, 0);
       setIsSuccess(true);
       clearCart();
@@ -161,12 +196,19 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const phoneValidationError = validatePhone(formData.phone);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+    
     if (paymentMethod === "online") return; // Handled by StripeWrapper
     
     setIsSubmitting(true);
     try {
-      await createOrder("New");
-      await sendOrderWebhook();
+      const newOrderId = await createOrder("New");
+      await sendOrderWebhook(newOrderId, "New");
       window.scrollTo(0, 0);
       setIsSuccess(true);
       clearCart();
@@ -310,13 +352,24 @@ export default function CheckoutPage() {
                       required
                       type="tel"
                       placeholder="05XXXXXXXX"
-                      className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-left font-sans text-gray-900 placeholder:text-gray-400"
+                      className={`w-full p-4 bg-gray-50 border ${phoneError ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-left font-sans text-gray-900 placeholder:text-gray-400`}
                       dir="ltr"
                       value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
+                      onChange={(e) => {
+                        setFormData({ ...formData, phone: e.target.value });
+                        if (phoneError) setPhoneError("");
+                      }}
+                      onBlur={() => {
+                        if (formData.phone) {
+                          setPhoneError(validatePhone(formData.phone));
+                        }
+                      }}
                     />
+                    {phoneError && (
+                      <p className="text-red-500 text-sm font-bold mt-1">
+                        {phoneError}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -544,7 +597,7 @@ export default function CheckoutPage() {
               {paymentMethod === "online" ? (
                 <StripeWrapper 
                   total={total} 
-                  disabled={formData.city === "خارج الرياض"}
+                  disabled={formData.city === "خارج الرياض" || !!phoneError}
                   onSuccess={handleStripeSuccess}
                   buttonText={`دفع ${total} ر.س وتأكيد الطلب`}
                 />

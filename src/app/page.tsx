@@ -226,33 +226,38 @@ export default function Home() {
               <motion.div 
                 animate={{ y: [0, -15, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="transform translate-y-8 md:translate-y-12"
+                className="transform translate-y-8 md:translate-y-12 block"
               >
-                <Image
-                  src="/nano-black.jpeg"
-                  alt="جوارب نانو الفضة"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{ width: '100%', height: 'auto' }}
-                  className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 hover:scale-105"
-                  priority
-                />
+                <Link href="/product/premium-socks">
+                  <Image
+                    src="/nano-black.jpeg"
+                    alt="جوارب نانو الفضة"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{ width: '100%', height: 'auto' }}
+                    className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 hover:scale-105"
+                    priority
+                  />
+                </Link>
               </motion.div>
               <motion.div 
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="block"
               >
-                <Image
-                  src="/joss.png"
-                  alt="بكج التوفير قطن"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{ width: '100%', height: 'auto' }}
-                  className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 hover:scale-105"
-                  priority
-                />
+                <Link href="/product/cotton-bundle">
+                  <Image
+                    src="/joss.png"
+                    alt="بكج التوفير قطن"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{ width: '100%', height: 'auto' }}
+                    className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 hover:scale-105"
+                    priority
+                  />
+                </Link>
               </motion.div>
             </div>
           </div>
@@ -362,7 +367,7 @@ export default function Home() {
             </div>
             <div className="flex-1 w-full max-w-lg lg:max-w-none relative mt-12 md:mt-0">
               <div className="hidden md:grid grid-cols-2 gap-4 md:gap-6">
-                <div className="flex flex-col gap-4 transform translate-y-8 md:translate-y-12">
+                <Link href="/product/premium-socks" className="flex flex-col gap-4 transform translate-y-8 md:translate-y-12 block group">
                   <Image
                     src="/nano-black.jpeg"
                     alt="بكج نانو الفضة"
@@ -370,13 +375,13 @@ export default function Home() {
                     height={0}
                     sizes="100vw"
                     style={{ width: '100%', height: 'auto' }}
-                    className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 hover:scale-105"
+                    className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 group-hover:scale-105"
                   />
                   <span className="text-gray-900 font-bold text-lg md:text-xl text-center px-2">
                     تقنية نانو الفضة
                   </span>
-                </div>
-                <div className="flex flex-col gap-4">
+                </Link>
+                <Link href="/product/cotton-bundle" className="flex flex-col gap-4 block group">
                   <Image
                     src="/joss.png"
                     alt="بكج التوفير شرابات قطن"
@@ -384,12 +389,12 @@ export default function Home() {
                     height={0}
                     sizes="100vw"
                     style={{ width: '100%', height: 'auto' }}
-                    className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 hover:scale-105"
+                    className="rounded-[2rem] shadow-2xl shadow-gray-900/10 border-4 border-primary transition-transform duration-700 group-hover:scale-105"
                   />
                   <span className="text-gray-900 font-bold text-lg md:text-xl text-center px-2">
                     كمية تكفيك شهور
                   </span>
-                </div>
+                </Link>
               </div>
 
               {/* Mobile Only: Hero03 Image */}
