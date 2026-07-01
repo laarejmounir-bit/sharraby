@@ -76,6 +76,31 @@ export default function CheckoutPage() {
           num_items: items.reduce((sum, item) => sum + item.quantity, 0)
         });
       }
+      if ((window as any).ttq) {
+        (window as any).ttq.track('InitiateCheckout', {
+          value: total,
+          currency: 'SAR',
+          contents: items.map(item => ({
+            content_id: item.id,
+            content_name: item.name,
+            quantity: item.quantity,
+            price: item.price
+          })),
+        });
+      }
+      // TikTok Events API (Server Side)
+      fetch('/api/tiktok-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventName: 'InitiateCheckout',
+          value: total,
+          currency: 'SAR',
+          items: items,
+        }),
+      }).catch(console.error);
     }
   }, []);
 
@@ -138,6 +163,34 @@ export default function CheckoutPage() {
           num_items: items.reduce((sum, item) => sum + item.quantity, 0)
         });
       }
+      if ((window as any).ttq) {
+        (window as any).ttq.track('CompletePayment', {
+          value: total,
+          currency: 'SAR',
+          contents: items.map(item => ({
+            content_id: item.id,
+            content_name: item.name,
+            quantity: item.quantity,
+            price: item.price
+          })),
+        });
+      }
+
+      // TikTok Events API (Server Side)
+      fetch('/api/tiktok-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventName: 'CompletePayment',
+          orderId: newOrderId,
+          phone: formData.phone,
+          value: total,
+          currency: 'SAR',
+          items: items,
+        }),
+      }).catch(console.error);
     }
 
     return newOrderId;

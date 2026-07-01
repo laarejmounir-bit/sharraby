@@ -48,6 +48,31 @@ export const useCartStore = create<CartStore>()(
               num_items: quantity
             });
           }
+          if ((window as any).ttq) {
+            (window as any).ttq.track('AddToCart', {
+              value: item.price,
+              currency: 'SAR',
+              contents: [{
+                content_id: item.id,
+                content_name: item.name,
+                quantity: quantity,
+                price: item.price
+              }],
+            });
+          }
+          // TikTok Events API (Server Side)
+          fetch('/api/tiktok-event', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              eventName: 'AddToCart',
+              value: item.price,
+              currency: 'SAR',
+              items: [{ ...item, quantity }],
+            }),
+          }).catch(console.error);
         }
         set((state) => {
           const existingItem = state.items.find((i) => i.id === item.id);
