@@ -79,14 +79,52 @@ function CheckoutForm({ onSuccess, disabled, buttonText }: Omit<StripeCheckoutPr
       <div className="mb-6">
         <ExpressCheckoutElement 
           onConfirm={async () => {
-             // Express checkout is handled automatically, but we might need to handle success?
-             // Actually, express checkout will redirect to return_url if not using redirect: 'if_required' in it.
-             // We'll leave it as default which redirects, or just let users use it.
-             // Wait, ExpressCheckoutElement triggers its own confirmation. 
-             // We can't easily inject the order creation BEFORE it confirms if we don't use onConfirm.
-             // To keep it safe and functional, we just use PaymentElement which includes Apple Pay if we don't put ExpressCheckoutElement.
-             // But the prompt specifically asked for ExpressCheckoutElement. 
-             // We will include it.
+            if (!stripe || !elements || disabled) {
+              setErrorMessage("لا يمكن إتمام الدفع الآن. يرجى التأكد من تعبئة كافة الحقول.");
+              throw new Error("لا يمكن إتمام الدفع الآن.");
+            }
+
+            // Trigger main form validation
+            const checkoutForm = document.getElementById("checkout-form") as HTMLFormElement | null;
+            if (checkoutForm && !checkoutForm.checkValidity()) {
+              checkoutForm.reportValidity();
+              setErrorMessage("يرجى إكمال جميع البيانات المطلوبة في النموذج أعلاه.");
+              throw new Error("يرجى إكمال جميع البيانات المطلوبة في النموذج أعلاه.");
+            }
+
+            setErrorMessage(null);
+            setIsSubmitting(true);
+
+            // Validate the PaymentElement fields (if any are required)
+            const { error: submitError } = await elements.submit();
+            if (submitError) {
+              setErrorMessage(submitError.message || "حدث خطأ");
+              setIsSubmitting(false);
+              throw new Error(submitError.message || "حدث خطأ");
+            }
+
+            // Confirm payment with Stripe
+            const { error, paymentIntent } = await stripe.confirmPayment({
+              elements,
+              confirmParams: {
+                return_url: window.location.origin + "/thank-you",
+              },
+              redirect: "if_required", // Prevent redirect so we can create the order in our DB
+            });
+
+            if (error) {
+              setErrorMessage(error.message || "حدث خطأ في الدفع");
+              setIsSubmitting(false);
+              throw new Error(error.message || "حدث خطأ في الدفع");
+            } else if (paymentIntent && paymentIntent.status === "succeeded") {
+              // Success!
+              await onSuccess(paymentIntent.id);
+              setIsSubmitting(false);
+            } else {
+              setErrorMessage("حالة الدفع غير معروفة.");
+              setIsSubmitting(false);
+              throw new Error("حالة الدفع غير معروفة.");
+            }
           }}
         />
       </div>
