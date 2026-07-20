@@ -39,12 +39,13 @@ const BUNDLES = [
     isPopular: true,
   },
   {
-    id: 30,
-    name: "3 بكج",
-    pairs: 30,
-    price: 249,
-    originalPrice: 399,
-    badge: "أفضل قيمة",
+    id: 40,
+    name: "4 بكج",
+    pairs: 40,
+    price: 199,
+    originalPrice: 499,
+    badge: "عرض جبار لمدة 24 ساعة",
+    isFlashSale: true,
   },
 ];
 
@@ -249,14 +250,14 @@ export default function ProductPage() {
                         return newColors.slice(0, packagesCount);
                       });
                     }}
-                    className={`relative w-full p-5 rounded-2xl border-2 transition-all flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${selectedBundle.id === bundle.id ? "border-primary bg-primary/5 shadow-md" : "border-gray-200 bg-white hover:border-primary/40"}`}
+                    className={`relative w-full p-5 rounded-2xl border-2 transition-all flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${selectedBundle.id === bundle.id ? (bundle.isFlashSale ? "border-red-600 bg-red-50 shadow-md ring-2 ring-red-500 animate-pulse" : "border-primary bg-primary/5 shadow-md") : (bundle.isFlashSale ? "border-red-500 bg-white hover:bg-red-50" : "border-gray-200 bg-white hover:border-primary/40")}`}
                   >
                     <div className="flex items-center gap-4">
                       <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedBundle.id === bundle.id ? "border-primary" : "border-gray-300"}`}
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedBundle.id === bundle.id ? (bundle.isFlashSale ? "border-red-600" : "border-primary") : "border-gray-300"}`}
                       >
                         {selectedBundle.id === bundle.id && (
-                          <div className="w-3 h-3 bg-primary rounded-full" />
+                          <div className={`w-3 h-3 rounded-full ${bundle.isFlashSale ? "bg-red-600" : "bg-primary"}`} />
                         )}
                       </div>
                       <div className="text-right">
@@ -265,7 +266,7 @@ export default function ProductPage() {
                             {bundle.name}
                           </p>
                           {bundle.badge && (
-                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm ${bundle.isPopular ? "bg-gradient-to-l from-orange-500 to-amber-500 text-white animate-pulse" : "bg-gray-100 text-gray-700"}`}>
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm ${bundle.isFlashSale ? "bg-red-600 text-white animate-pulse" : bundle.isPopular ? "bg-gradient-to-l from-orange-500 to-amber-500 text-white animate-pulse" : "bg-gray-100 text-gray-700"}`}>
                               {bundle.isPopular && <Flame className="w-3 h-3 text-white" />}
                               {bundle.badge}
                             </span>
@@ -298,7 +299,7 @@ export default function ProductPage() {
                 {Array.from({ length: selectedBundle.pairs / 10 }).map((_, idx) => (
                   <div key={idx} className={`flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100 ${selectedBundle.pairs / 10 === 1 ? "justify-center" : ""}`}>
                     {selectedBundle.pairs / 10 > 1 && (
-                      <span className="font-semibold text-gray-700">{["البكج الأول", "البكج الثاني", "البكج الثالث"][idx] || `البكج ${idx + 1}`}</span>
+                      <span className="font-semibold text-gray-700">{["البكج الأول", "البكج الثاني", "البكج الثالث", "البكج الرابع"][idx] || `البكج ${idx + 1}`}</span>
                     )}
                     <div className={`flex gap-2 ${selectedBundle.pairs / 10 === 1 ? "w-full justify-center" : ""}`}>
                       {COLORS.map((color) => (
