@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
-import Script from "next/script";
+
 import GlobalSchema from "@/components/GlobalSchema";
 
 const cairo = Cairo({
@@ -63,9 +63,8 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={cairo.variable}>
       <head>
         <GlobalSchema />
-        <Script
+        <script
           id="snapchat-pixel"
-          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
@@ -74,15 +73,13 @@ export default function RootLayout({
               r.src=n;var u=t.getElementsByTagName(s)[0];
               u.parentNode.insertBefore(r,u);})(window,document,
               'https://sc-static.net/scevent.min.js');
-
               snaptr('init', '4ea2a1e7-87ab-4100-9680-6e3118187f13');
               snaptr('track', 'PAGE_VIEW');
             `,
           }}
         />
-        <Script
+        <script
           id="meta-pixel"
-          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s)

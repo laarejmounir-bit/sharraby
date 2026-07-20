@@ -22,6 +22,15 @@ import ProductSchema from "@/components/ProductSchema";
 
 const BUNDLES = [
   {
+    id: 40,
+    name: "4 بكج",
+    pairs: 40,
+    price: 199,
+    originalPrice: 499,
+    badge: "عرض جبار لمدة 24 ساعة",
+    isFlashSale: true,
+  },
+  {
     id: 10,
     name: "1 بكج",
     pairs: 10,
@@ -38,15 +47,6 @@ const BUNDLES = [
     badge: "الأكثر مبيعاً",
     isPopular: true,
   },
-  {
-    id: 40,
-    name: "4 بكج",
-    pairs: 40,
-    price: 199,
-    originalPrice: 499,
-    badge: "عرض جبار لمدة 24 ساعة",
-    isFlashSale: true,
-  },
 ];
 
 const COLORS = [
@@ -59,7 +59,7 @@ export default function ProductPage() {
   const [visibleReviews, setVisibleReviews] = useState(3);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedBundle, setSelectedBundle] = useState(BUNDLES[0]);
-  const [selectedColors, setSelectedColors] = useState([COLORS[0]]);
+  const [selectedColors, setSelectedColors] = useState(Array(BUNDLES[0].pairs / 10).fill(COLORS[0]));
   const [selectedImage, setSelectedImage] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const { addItem, openCart } = useCartStore();
