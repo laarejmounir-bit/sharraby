@@ -25,7 +25,7 @@ const BUNDLES = [
     id: 40,
     name: "4 بكج",
     pairs: 40,
-    price: 199,
+    price: 229,
     originalPrice: 499,
     badge: "عرض جبار لمدة 24 ساعة",
     isFlashSale: true,
