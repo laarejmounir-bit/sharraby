@@ -61,6 +61,19 @@ export default function CheckoutPage() {
   const total = subtotal + shipping - discountAmount;
 
   useEffect(() => {
+    if (isSuccess && typeof window !== 'undefined') {
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-18374230920',
+          'value': total,
+          'currency': 'SAR',
+          'transaction_id': orderId
+        });
+      }
+    }
+  }, [isSuccess, total, orderId]);
+
+  useEffect(() => {
     if (items.length > 0 && typeof window !== 'undefined') {
       if ((window as any).snaptr) {
         (window as any).snaptr('track', 'START_CHECKOUT', {

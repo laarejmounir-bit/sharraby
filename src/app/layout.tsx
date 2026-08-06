@@ -110,6 +110,18 @@ export default function RootLayout({
             `,
           }}
         />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18374230920"></script>
+        <script
+          id="google-tag"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18374230920');
+            `,
+          }}
+        />
       </head>
       <body className="antialiased bg-[#F8F9FA] text-[#1D1D1F] font-sans flex flex-col min-h-screen print:bg-white">
         <div className="print:hidden">
