@@ -181,11 +181,6 @@ export default function CottonBundlePage() {
                 </button>
               ))}
             </div>
-            
-            {/* Extended Details for Mobile */}
-            <div className="md:hidden mt-8">
-              <DetailsSection pairs={selectedBundle.pairs} />
-            </div>
           </div>
 
           <div className="flex flex-col">
@@ -367,8 +362,8 @@ export default function CottonBundlePage() {
               </div>
             </div>
 
-            {/* Extended Details Desktop */}
-            <div className="hidden md:block mt-12 pt-8 border-t border-gray-100">
+            {/* Extended Details */}
+            <div className="mt-8 md:mt-12 pt-8 border-t border-gray-100">
                 <DetailsSection pairs={selectedBundle.pairs} />
             </div>
 
