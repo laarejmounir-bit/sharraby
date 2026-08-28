@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const { eventName, orderId, email, phone, value, currency, items, pageUrl } = body;
 
     const pixels = [
-      { code: 'DA7M8D3C77U4RNF8GO60', token: '1b23d08427c83feba115e13ab782beab0496caf3' }
+      { code: 'D5L9RM3C77UEK8Q4GM80', token: '600b9eef12faf8aeb9cd6c1312644fe61111ddd4' }
     ];
 
     // Hash user data if present (TikTok requires SHA-256 for user info)
